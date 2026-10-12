@@ -1,0 +1,33 @@
+{
+    "map_size": [
+        5,
+        5
+    ],
+    "walle_start": [
+        0,
+        0
+    ],
+    "eve_location": [
+        4,
+        4
+    ],
+    "clue_locations": {
+        "2,2": "signal_strong",
+        "1,4": "signal_weak",
+        "4,3": "signal_very_strong"
+    },
+    "initial_signal": {
+        "direction": "NE",
+        "strength": "weak",
+        "timestamp": "T-minus 5 mins"
+    },
+    "resource_budget": {
+        "battery": 100,
+        "time_limit": 50,
+        "action_costs": {
+            "move": 5,
+            "scan": 10,
+            "recharge": -50
+        }
+    }
+}
