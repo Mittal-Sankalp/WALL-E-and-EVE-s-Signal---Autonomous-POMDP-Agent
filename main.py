@@ -185,52 +185,69 @@ class WalleAgent:
         print("-" * 120)
         print(f"\nMission complete. Excel report generated at: {save_path}")
 
-    def plot_trajectory(self, env, found_eve, filename="mission_trajectory.png"):
+    def plot_trajectory_3d(self, env, found_eve, filename="mission_trajectory_3d.png"):
         script_dir = os.path.dirname(os.path.abspath(__file__))
         save_path = os.path.join(script_dir, filename)
         
-        fig, ax = plt.subplots(figsize=(8, 8))
+        fig = plt.figure(figsize=(12, 8))
+        ax = fig.add_subplot(111, projection='3d')
         
-        # Plot final belief matrix as a heatmap
-        belief_matrix = np.array(self.belief).T
-        cax = ax.imshow(belief_matrix, cmap='Blues', origin='lower', extent=[-0.5, self.grid_size[0]-0.5, -0.5, self.grid_size[1]-0.5], alpha=0.8)
-        cbar = plt.colorbar(cax, shrink=0.8)
-        cbar.set_label("Agent's Final Belief Probability", rotation=270, labelpad=15)
+        # Grid coordinates
+        x_pos, y_pos = np.meshgrid(np.arange(self.grid_size[0]), np.arange(self.grid_size[1]), indexing="ij")
+        x_pos = x_pos.flatten()
+        y_pos = y_pos.flatten()
+        z_pos = np.zeros_like(x_pos)
         
-        # Draw Grid lines
-        ax.set_xticks(np.arange(-0.5, self.grid_size[0], 1), minor=True)
-        ax.set_yticks(np.arange(-0.5, self.grid_size[1], 1), minor=True)
-        ax.grid(which='minor', color='black', linestyle='-', linewidth=0.5, alpha=0.3)
-        ax.set_xticks(range(self.grid_size[0]))
-        ax.set_yticks(range(self.grid_size[1]))
-
-        # Plot path
+        # Belief probabilities form the height of the 3D bars
+        belief_matrix = np.array(self.belief).flatten()
+        dx = dy = 0.6
+        dz = belief_matrix
+        
+        # Plot 3D Bars
+        ax.bar3d(x_pos - dx/2, y_pos - dy/2, z_pos, dx, dy, dz, color='lightblue', alpha=0.6, edgecolor='cadetblue')
+        
+        # Plot Path floating slightly above the belief surface
         path_x = [p[0] for p in self.path]
         path_y = [p[1] for p in self.path]
-        ax.plot(path_x, path_y, color='black', linestyle='--', linewidth=1.5, alpha=0.6, label="WALL-E Path")
-        ax.scatter(path_x, path_y, c='grey', s=20, zorder=3)
-
-        # Plot Start, EVE, and Clues
-        ax.scatter(path_x[0], path_y[0], c='orange', marker='s', s=150, edgecolor='black', zorder=4, label='Start')
-        ax.scatter(env.eve_pos[0], env.eve_pos[1], c='gold', marker='*', s=350, edgecolor='black', zorder=5, label='EVE (Actual)')
-
+        path_z = [self.belief[p[0]][p[1]] + np.max(self.belief)*0.05 for p in self.path] 
+        
+        ax.plot(path_x, path_y, path_z, color='black', linewidth=2, linestyle='dashed', label='WALL-E Path')
+        ax.scatter(path_x, path_y, path_z, color='black', s=20)
+        
+        # Plot Start
+        start_x, start_y = self.path[0]
+        start_z = self.belief[start_x][start_y] + np.max(self.belief)*0.1
+        ax.scatter(start_x, start_y, start_z, color='orange', s=150, marker='s', label='Start', depthshade=False)
+        
+        # Plot EVE
+        eve_x, eve_y = env.eve_pos
+        eve_z = self.belief[eve_x][eve_y] + np.max(self.belief)*0.1
+        ax.scatter(eve_x, eve_y, eve_z, color='gold', s=300, marker='*', label='EVE (Actual)', depthshade=False)
+        
+        # Plot Clues
         clue_plotted = False
         for clue_str, signal in env.clues.items():
             cx, cy = map(int, clue_str.split(','))
+            cz = self.belief[cx][cy] + np.max(self.belief)*0.1
             label = 'Clues' if not clue_plotted else ""
-            ax.scatter(cx, cy, c='purple', marker='X', s=100, zorder=4, label=label)
+            ax.scatter(cx, cy, cz, c='purple', marker='X', s=100, label=label, depthshade=False)
             clue_plotted = True
-
-        ax.set_title("WALL-E Mission Trajectory & Belief Map", fontsize=14, pad=15)
+            
+        ax.set_title("3D WALL-E Mission Trajectory & Belief Map", pad=20, fontsize=14)
         ax.set_xlabel("X Coordinate")
         ax.set_ylabel("Y Coordinate")
-        ax.legend(loc='upper left', bbox_to_anchor=(1.2, 1))
+        ax.set_zlabel("Belief Probability")
+        
+        ax.set_xticks(range(self.grid_size[0]))
+        ax.set_yticks(range(self.grid_size[1]))
+        
+        ax.legend(loc='upper left', bbox_to_anchor=(1.05, 1))
         
         plt.tight_layout()
         plt.savefig(save_path, dpi=300)
         plt.close()
         
-        print(f"Visualization saved at: {save_path}")
+        print(f"3D Visualization saved at: {save_path}")
 
     def export_text_report(self, env, found_eve, filename="mission_report.txt"):
         script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -292,5 +309,5 @@ if __name__ == "__main__":
         agent.log_step(action, pos, obs, env.battery, reasoning)
         
     agent.export_excel(env, found_eve)
-    agent.plot_trajectory(env, found_eve)
+    agent.plot_trajectory_3d(env, found_eve)
     agent.export_text_report(env, found_eve)
