@@ -1,0 +1,13 @@
+==================================================
+FINAL MISSION REPORT
+==================================================
+Operator: Sankalp Mittal (26BIT0031)
+Mission Status: EVE LOCATED SUCCESSFULLY
+Final Battery: 20%
+Total Steps Taken: 12
+
+Evidence Found:
+ - Initial Intel: weak signal detected from NE
+
+Recommended Next Step: Await further instructions.
+==================================================
