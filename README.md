@@ -1,7 +1,7 @@
 # WALL-E and EVE's Signal - Autonomous POMDP Agent
 
 ## Overview
-This repository contains an autonomous agent built to operate within a Partially Observable Markov Decision Process (POMDP) framework. It must explore a 2D grid to locate EVE while strictly managing a limited resource budget (battery and time).
+This repository contains an autonomous agent built for the VinnovateIT AI/ML domain task. The agent operates within a Partially Observable Markov Decision Process (POMDP) framework. It must explore a 2D grid to locate EVE while strictly managing a limited resource budget (battery and time).
 
 ## Architecture & Strategy
 * **Environment:** A custom simulated grid where every action (`move`, `scan`, `recharge`) consumes battery and time.
@@ -13,10 +13,10 @@ This repository contains an autonomous agent built to operate within a Partially
 2. **`config.json`**: The mission configuration defining map size, clue seeds, budget, and initial signal intelligence.
 3. **`Mission_Report.xlsx`**: A full tabular action trace detailing every step, observation, battery level, and reasoning.
 4. **`mission_report.txt`**: A summarized final report of the mission's outcome, evidence gathered, and inferred coordinates.
-5. **`mission_trajectory.png`**: A heatmap and pathing visualization of the agent's belief matrix and movement history.
+5. **`mission_trajectory_3d.png`**: A 3D rendered visualization of the agent's belief matrix, pathing trajectory, start point, and clue coordinates.
 
 ## How to Run
 1. Clone this repository.
 2. Install dependencies: `pip install -r requirements.txt`
 3. Execute the simulation: `python main.py`
-4. The script will output the terminal trace and automatically generate the Excel log, text report, and visualization image in the root directory.
+4. The script will output the terminal trace and automatically generate the Excel log, text report, and 3D visualization image directly in the root directory.
