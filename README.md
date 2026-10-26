@@ -1,7 +1,7 @@
 # WALL-E and EVE's Signal - Autonomous POMDP Agent
 
 ## Overview
-This repository contains an autonomous agent built for the VinnovateIT AI/ML domain task. The agent operates within a Partially Observable Markov Decision Process (POMDP) framework. It must explore a 2D grid to locate EVE while strictly managing a limited resource budget (battery and time).
+This repository contains an autonomous agent. The agent operates within a Partially Observable Markov Decision Process (POMDP) framework. It must explore a 2D grid to locate EVE while strictly managing a limited resource budget (battery and time).
 
 ## Architecture & Strategy
 * **Environment:** A custom simulated grid where every action (`move`, `scan`, `recharge`) consumes battery and time.
